@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citations Checker</title>
+</head>
+<body>
+    <h1>Citations Checker</h1>
+    <form id="apiForm">
+        <label for="apiUrl">API URL:</label><br>
+        <input type="text" id="apiUrl" name="apiUrl" value="https://devapi.beyondchats.com/api/get_message_with_sources" required><br><br>
+        <label for="responseText">Response Text:</label><br>
+        <textarea id="responseText" name="responseText" rows="10" cols="50" required>Yes, we offer online delivery services through major platforms like Swiggy and Zomato. You can also reserve a table directly from our website if you are planning to have breakfast!</textarea><br><br>
+        <button type="submit">Check Citations</button>
+    </form>
+    <h2>Citations:</h2>
+    <ul id="citationsList"></ul>
+    <script>
+        document.getElementById('apiForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const apiUrl = document.getElementById('apiUrl').value;
+            const responseText = document.getElementById('responseText').value;
+            const response = await fetch('/api/citations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ apiUrl, responseText })
+            });
+            const citations = await response.json();
+            const list = document.getElementById('citationsList');
+            list.innerHTML = '';
+            citations.forEach(citation => {
+                const li = document.createElement('li');
+                li.textContent = `ID: ${citation.id}, Link: ${citation.link}`;
+                list.appendChild(li);
+            });
+        });
+    </script>
+</body>
+</html>
